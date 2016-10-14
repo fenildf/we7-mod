@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://www.we7.cc" versionCode="0.6">
+	<application setting="false">
+		<name><![CDATA[美女倒计时]]></name>
+		<identifie><![CDATA[yoby_clock]]></identifie>
+		<version><![CDATA[5.0]]></version>
+		<type><![CDATA[services]]></type>
+		<ability><![CDATA[简单的报时管理功能和重要节日倒计时管理,完全免费的应用]]></ability>
+		<description><![CDATA[美女倒计时]]></description>
+		<author><![CDATA[Yoby]]></author>
+		<url><![CDATA[http://bbs.we7.cc/]]></url>
+	</application>
+	<platform>
+		<subscribes>
+		</subscribes>
+		<handles>
+			<message type="text" />
+		</handles>
+		<rule embed="true" />
+	</platform>
+	<bindings>
+		<menu>
+			<entry title="倒计时管理" do="clock" state="" direct="false" />
+		</menu>
+	</bindings>
+	<install><![CDATA[
+		CREATE TABLE `ims_yoby_clock` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `weid` int(10) DEFAULT NULL,
+  `title` varchar(50) DEFAULT NULL,
+  `createtime` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+	]]></install>
+	<uninstall><![CDATA[
+	DROP TABLE IF EXISTS `ims_yoby_clock`;
+	]]></uninstall>
+	<upgrade><![CDATA[]]></upgrade>
+</manifest>

@@ -1,0 +1,289 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jssdk</title>
+ <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+ <base href="{$yobyurl}">
+  <link rel="stylesheet" href="weui/weuix.min.css"/>
+      <script src="weui/zepto.min.js"></script>
+
+</head>
+
+<body ontouchstart>
+ <div class="ui-wx">
+<div class="ui-banner"></div>
+<div class="ui-inner">
+  <!--页面开始-->
+    <div class="ui-page">
+   <h2 class="ui-page-title">jssdk全功能测试演示</h2>
+   <div class="ui-page-meta-list"><!--meta-->
+                     <!--span class="ui-page-meta-text ui-page-meta">最新消息</span-->
+                      <em class="ui-page-meta-text ui-page-meta" >2015-06-29</em>
+                      <em class="ui-page-meta-text ui-page-meta" onclick='close_wechat()'>悠币</em>
+                       <a class=" ui-page-meta ui-page-meta-nickname" href="{$surl}" >点击进入游戏</a>
+                    </div><!--meta结束-->                                 
+    <div class="ui-page-content"><!--内容-->
+                    <p>主要测试以下功能:1.图片预览接口
+                    2.图片上传接口,包含jssdk上传和php上传微信服务器,下载只包含php下载,jssdk那个没作用
+                    3.二维码识别接口,自己处理数据
+                    4.分享到朋友圈或好友
+                    5.包含很多回调,ajax回调
+                    6.这里是主要常用的,全部包含php端处理,而不是只有个效果.</p>
+                   
+                    <p><img src='http://we7cloud-10016060.file.myqcloud.com/images/201601/27/145388756856a890514a84b_preview.jpg' class='weixin'><img src='http://we7cloud-10016060.file.myqcloud.com/images/201601/27/145388756856a890514a84b_preview.jpg' class='weixin'>
+                    <a class="weui_btn weui_btn_plain_primary" href="javascript:;" id="qr">扫一扫</a>
+                    <a class="weui_btn weui_btn_plain_primary" href="javascript:;" id="mid">PHP上传多媒体返回media_id</a>
+                    
+                    <div class="weui_cells weui_cells_form">
+                      <div class="weui_cell">
+                <div class="weui_cell_bd weui_cell_primary">
+                    <div class="weui_uploader">
+                        <div class="weui_uploader_hd weui_cell">
+                            <div class="weui_cell_bd weui_cell_primary">单图上传</div>
+                            <div class="weui_cell_ft"></div>
+                        </div>
+                        <div class="weui_uploader_bd">
+                            <ul class="weui_uploader_files" id='img1'>
+                            
+                            
+                            </ul>
+                            <div class="weui_uploader_input_wrp" >
+                                <span class="weui_uploader_input"  id="i1" />
+                                <input  type="hidden"  id="i4" />
+                                <span id="imgi"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+            <form id="f"  action="{$_W['siteroot']}app/index.php?i={$weid}&c=entry&do=ceshi&m=we7_demo" method="post" > 
+                <div class="weui_cell">
+                <div class="weui_cell_bd weui_cell_primary">
+                    <div class="weui_uploader">
+                        <div class="weui_uploader_hd weui_cell">
+                            <div class="weui_cell_bd weui_cell_primary">多图上传(微信规定最多9张)</div>
+                            <div class="weui_cell_ft"></div>
+                        </div>
+                        <div class="weui_uploader_bd">
+                            <ul class="weui_uploader_files" id='img2'>
+                            
+                            
+                            </ul>
+                            <div class="weui_uploader_input_wrp" id="file2">
+                                <span class="weui_uploader_input"   id='headimgurl2' ></span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          <input type="hidden" name="token" value="{$_W['token']}" />    
+        <button type="submit" name="submit" value="发布" class="weui_btn weui_btn_plain_primary"  id="showTooltips">发布</button>    
+            
+   </form>
+  </div>
+  </div>
+</p>
+
+                    
+                    </div><!--内容结束-->
+
+
+</div><!--页面结束-->
+
+   
+  </div>
+</div> 
+<script type="text/javascript" src='http://res.wx.qq.com/open/js/jweixin-1.0.0.js'></script>
+<?php
+$wx = $_W['account']['jssdkconfig'];
+$wx['url'] ='http://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ;
+?> 
+
+<script>
+ function close_wechat(){
+ if( window.confirm('你确定要离开微信吗?') ){
+ WeixinJSBridge.call("closeWindow");
+ }
+ }
+ var appIdstr = "{$wx['appId']}";
+    var timestampstr = "{$wx['timestamp']}";
+    var nonceStrstr = "{$wx['nonceStr']}";
+    var signaturestr = "{$wx['signature']}";
+wx.config({
+	debug: false,
+	appId: appIdstr,
+	timestamp: timestampstr,
+	nonceStr: nonceStrstr,
+	signature: signaturestr,
+		jsApiList: [
+		'checkJsApi',
+		'onMenuShareTimeline',
+		'onMenuShareAppMessage','showMenuItems','hideOptionMenu' ,'chooseImage','previewImage'
+,'uploadImage','downloadImage' ,'scanQRCode'
+	]
+});
+wx.ready(function () {
+//要分享的数据
+  var shareData = {
+    title:"jssdk演示",
+    desc: "描述",
+    link:"{$wx['url']}" ,
+    imgUrl:"http://weixin.yoby123.cn/attachment/headimg_1.jpg?time=1463681994",
+    type:'', // 分享类型,music、video或link，不填默认为link 分享给朋友
+    dataUrl:'', // 如果type是music或video，则要提供数据链接，默认为空 分享给朋友
+  };
+wx.hideOptionMenu();
+		wx.showMenuItems({
+			menuList: [
+			'menuItem:share:timeline', 
+			'menuItem:share:appMessage',
+			'menuItem:copyUrl',
+			],
+		});
+wx.onMenuShareAppMessage({
+      title: shareData.title,
+      desc: shareData.desc,
+      link: "{$wx['url']}",
+      imgUrl:shareData.imgUrl,
+      type: shareData.type,
+    dataUrl: shareData.dataUrl,
+      trigger: function (res) {},
+      success: function (res) {},
+      cancel: function (res) {},
+      fail: function (res) {},
+      complete:function(res){},
+    });	
+
+//分享到朋友圈
+    wx.onMenuShareTimeline({
+      title:shareData.title+','+shareData.desc,
+      link: "{$wx['url']}",
+      imgUrl:shareData.imgUrl,
+      trigger: function (res) {},
+      success: function (res) {},
+      cancel: function (res) {},
+      fail: function (res) {},
+      complete:function(res){},
+    });		
+
+
+
+		
+		});
+		
+$(function(){
+
+
+
+
+
+var weixinimg=[];
+var weixinsrc=[];
+weixinimg=$('.weixin');
+for (var i=0;i<weixinimg.length;i++){
+weixinsrc[i]=weixinimg[i].src;
+}
+$('.weixin').click(function(){
+var index = $('.weixin').index(this);
+/*
+WeixinJSBridge.invoke('imagePreview', {
+'current' : weixinsrc[index],
+'urls' : weixinsrc
+});
+*/
+
+wx.previewImage({
+    current: weixinsrc[index], // 当前显示图片的http链接
+    urls:weixinsrc // 需要预览的图片http链接列表
+});
+
+});
+//单图上传
+  $('#i1').on('click', function () {
+  wx.chooseImage({
+  count:1,
+    success: function (res) {
+      var localIds = res.localIds;
+      syncUpload1(localIds);
+    }
+  });
+});
+var syncUpload1 = function(localIds){
+  var localId = localIds.pop();
+  wx.uploadImage({
+    localId: localId,
+    isShowProgressTips: 1,
+    success: function (res) {
+      var serverId = res.serverId; // 返回图片的服务器端ID
+        $.post("{$_W['siteroot']}app/index.php?i={$weid}&c=entry&do=ajax1&m=we7_demo",{mid:serverId},function(data){
+       
+        $('#img1').html('<li class="weui_uploader_file" style="background-image:url('+data.src+')"></li>'); 
+                $('#imgi').html('<input value="'+data.src+'"  type="hidden"  name="files" />');
+        },'json');
+   
+
+  }
+  
+  });
+};
+
+//多图上传
+  $('#headimgurl2').on('click', function () {
+  wx.chooseImage({
+    success: function (res) {
+      var localIds = res.localIds;
+      syncUpload(localIds);
+    }
+  });
+});
+var syncUpload = function(localIds){
+  var localId = localIds.pop();
+  wx.uploadImage({
+    localId: localId,
+    isShowProgressTips: 1,
+    success: function (res) {
+      var serverId = res.serverId; // 返回图片的服务器端ID
+        $.post("{$_W['siteroot']}app/index.php?i={$weid}&c=entry&do=ajax1&m=we7_demo",{mid:serverId},function(data){
+       
+        $('#img2').append('<li class="weui_uploader_file" style="background-image:url('+data.src+')"></li>'); 
+                $('#file2').append('<input value="'+data.src+'"  type="hidden"  name="files[]" />');
+        },'json');
+      if(localIds.length > 0){
+        syncUpload(localIds);
+    }
+   
+
+  }
+  
+  });
+};
+  
+//扫描二维码 
+document.querySelector('#qr').onclick = function () {
+    wx.scanQRCode({
+      needResult: 1,//0是微信处理,1是结果
+      desc: '我们自己来处理结果',
+      scanType: ["qrCode","barCode"],
+      success: function (res) {
+      var result = res.resultStr;
+      $.alert(result,"扫描结果");
+      }
+    });
+  };
+ //php上传多媒体
+ document.querySelector('#mid').onclick = function () {
+  $.post("{$_W['siteroot']}app/index.php?i={$weid}&c=entry&do=ajax2&m=we7_demo",{},function(data){
+       
+        $.alert(JSON.stringify(data));
+        },'json');
+  };
+   
+});
+</script>
+</body>
+</html>
+
+
+
